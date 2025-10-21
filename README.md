@@ -9,7 +9,6 @@ A small command-line utility to list and optionally test audio input/output devi
 - Play a test tone to an output device (single or all outputs)
 - Record a short sample from an input device (single or all inputs), compute RMS/peak and play it back
 - Optional interactive test menu after listing devices
-- Simple branding switch to show "Tsonos" in program output
 
 ## Requirements
 
