@@ -178,9 +178,9 @@ def list_devices(sort_by="index", json_out=False, show_sr=False):
             print(format_device(d, i, default_in, default_out, show_sr))
 
 
-def interactive_test(devices, args):
+def interactive_test(devices, args, program_name):
     """Simple interactive menu to run tests after listing devices."""
-    print("\nInteractive test mode. Press Enter to accept defaults or 'q' to quit.")
+    print(f"\n{program_name} interactive test mode. Press Enter to accept defaults or 'q' to quit.")
     while True:
         print("\nOptions:")
         print("  1) Test single output by index")
@@ -237,7 +237,7 @@ def interactive_test(devices, args):
                 print(f"Error: {e}")
         else:
             print("Unknown option")
-    print("Exiting interactive test mode.")
+    print(f"Exiting {program_name} interactive test mode.")
 
 
 def main(argv=None):
@@ -251,6 +251,9 @@ def main(argv=None):
     )
     p.add_argument("--show-sr", action="store_true", help="Show default samplerate")
 
+    # branding option
+    p.add_argument("--brand", action="store_true", help="Use 'Tsonos' branding for program output")
+
     # testing options
     p.add_argument("--test-output-index", type=int, help="Play test tone to output device index")
     p.add_argument("--test-input-index", type=int, help="Record short sample from input device index")
@@ -260,6 +263,12 @@ def main(argv=None):
     p.add_argument("--freq", type=float, default=1000.0, help="Frequency for output test tone (Hz)")
     p.add_argument("--amp", type=float, default=0.2, help="Amplitude for output test tone (0.0-1.0)")
     args = p.parse_args(argv)
+
+    # Choose program branding
+    program_name = "Tsonos" if args.brand else "Audio Device Tester"
+
+    # Header
+    print(f"{program_name} - List and test audio devices (sounddevice)")
 
     # Always list devices first
     list_devices(sort_by=args.sort, json_out=args.json, show_sr=args.show_sr)
@@ -290,10 +299,10 @@ def main(argv=None):
 
     # If no test flags given and running interactively, offer optional interactive testing
     if not ran_tests and sys.stdin.isatty():
-        resp = input("\nRun tests now? [Y/N]: ").strip().lower()
+        resp = input(f"\nRun tests now with {program_name}? [Y/N]: ").strip().lower()
         if resp == "y":
             devices = _get_devices()
-            interactive_test(devices, args)
+            interactive_test(devices, args, program_name)
 
 
 if __name__ == "__main__":
